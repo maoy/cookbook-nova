@@ -1,3 +1,4 @@
+include_attribute "openstack-common"
 ########################################################################
 # Toggles - These can be overridden at the environment level
 default["enable_monit"] = false  # OS provides packages
@@ -127,8 +128,8 @@ default["nova"]["scheduler"]["default_filters"] = ["AvailabilityZoneFilter",
                                                    "SameHostFilter",
                                                    "DifferentHostFilter"]
 default["nova"]["libvirt"]["virt_type"] = "kvm"
-default["nova"]["libvirt"]["vncserver_listen"] = node["ipaddress"]
-default["nova"]["libvirt"]["vncserver_proxyclient_address"] = node["ipaddress"]
+default["nova"]["libvirt"]["vncserver_listen"] = node["openstack"]["internal_ipv4"]
+default["nova"]["libvirt"]["vncserver_proxyclient_address"] = node["openstack"]["internal_ipv4"]
 default["nova"]["libvirt"]["auth_tcp"] = "none"
 default["nova"]["libvirt"]["remove_unused_base_images"] = true
 default["nova"]["libvirt"]["remove_unused_resized_minimum_age_seconds"] = 3600
