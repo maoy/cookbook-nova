@@ -30,9 +30,11 @@ platform_options["nova_network_packages"].each do |pkg|
 end
 
 service "nova-network" do
+  #Note(maoy): without this provider, start action doesn't work on Ubuntu
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["nova_network_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
-  action :enable
+  action [:enable, :start]
 end

@@ -51,12 +51,16 @@ cookbook_file "/etc/nova/nova-compute.conf" do
   action :create
 end
 
+# run libvirt before nova-compute
+include_recipe "nova::libvirt"
+
 service "nova-compute" do
+  #Note(maoy): without this provider, start action doesn't work on Ubuntu
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["nova_compute_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
-  action :enable
+  action [:enable, :start]
 end
 
-include_recipe "nova::libvirt"
