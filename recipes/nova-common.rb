@@ -92,6 +92,8 @@ Chef::Log.debug("nova::nova-common:nova_api_endpoint|#{::URI.decode nova_api_end
 Chef::Log.debug("nova::nova-common:ec2_public_endpoint|#{ec2_public_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:image_endpoint|#{image_endpoint.to_s}")
 
+node.default["nova"]["libvirt"]["vncserver_listen"] = node["network"]["ipaddress_#{node["openstack"]["internal_interface"]}"]
+node.default["nova"]["libvirt"]["vncserver_proxyclient_address"] = node["network"]["ipaddress_#{node["openstack"]["internal_interface"]}"]
 template "/etc/nova/nova.conf" do
   source "nova.conf.erb"
   owner node["nova"]["user"]
@@ -99,7 +101,6 @@ template "/etc/nova/nova.conf" do
   mode 00644
   variables(
     :sql_connection => sql_connection,
-    :vncserver_proxyclient_address => novnc_proxy_endpoint.host,
     :novncproxy_base_url => novnc_endpoint.to_s,
     :xvpvncproxy_bind_host => xvpvnc_endpoint.host,
     :xvpvncproxy_bind_port => xvpvnc_endpoint.port,
