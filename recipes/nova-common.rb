@@ -77,7 +77,6 @@ identity_admin_endpoint = endpoint "identity-admin"
 identity_endpoint = endpoint "identity-api"
 xvpvnc_endpoint = endpoint "compute-xvpvnc" || {}
 novnc_endpoint = endpoint "compute-novnc-server" || {}
-novnc_proxy_endpoint = endpoint "compute-novnc"
 nova_api_endpoint = endpoint "compute-api" || {}
 ec2_public_endpoint = endpoint "compute-ec2-api" || {}
 image_endpoint = endpoint "image-api"
@@ -87,7 +86,6 @@ Chef::Log.debug("nova::nova-common:keystone|#{keystone}")
 Chef::Log.debug("nova::nova-common:identity_endpoint|#{identity_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:xvpvnc_endpoint|#{xvpvnc_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:novnc_endpoint|#{novnc_endpoint.to_s}")
-Chef::Log.debug("nova::nova-common:novnc_proxy_endpoint|#{novnc_proxy_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:nova_api_endpoint|#{::URI.decode nova_api_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:ec2_public_endpoint|#{ec2_public_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:image_endpoint|#{image_endpoint.to_s}")
