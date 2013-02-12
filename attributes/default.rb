@@ -1,7 +1,6 @@
 include_attribute "openstack-common"
 ########################################################################
 # Toggles - These can be overridden at the environment level
-default["enable_monit"] = false  # OS provides packages
 ########################################################################
 
 # Set to some text value if you want templated config files
