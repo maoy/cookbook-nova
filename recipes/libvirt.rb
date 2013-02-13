@@ -57,6 +57,16 @@ service "libvirt-bin" do
   action [:enable, :start]
 end
 
+bash "Make sure nova in libvirtd group" do
+  cwd "/tmp"
+  user "root"
+  code <<-EOH
+    usermod -G libvirtd nova
+  EOH
+
+  only_if { node["nova"]["install_method"] == "git" }
+end
+
 #remove default network if exists
 execute "Disabling default libvirt network" do
   command "virsh net-autostart default --disable"
@@ -90,16 +100,6 @@ template "/etc/default/libvirt-bin" do
   notifies :restart, "service[libvirt-bin]", :immediately
 
   only_if { platform? %w{ubuntu debian} }
-end
-
-bash "Make sure nova in libvirtd group" do
-  cwd "/tmp"
-  user "root"
-  code <<-EOH
-    usermod -G libvirtd nova
-  EOH
-
-  only_if { node["nova"]["install_method"] == "git" }
 end
 
 template "/etc/sysconfig/libvirtd" do
