@@ -82,6 +82,14 @@ if node["nova"]["install_method"] == "git" then
     #supports :manage_home => true
   end
 
+  directory "/var/lib/nova" do
+    owner "nova"
+    group "nova"
+    mode 00700
+    recursive true
+    action :create
+  end
+
   directory "/var/log/nova" do
     owner node["nova"]["user"]
     group node["nova"]["group"]
