@@ -92,6 +92,16 @@ template "/etc/default/libvirt-bin" do
   only_if { platform? %w{ubuntu debian} }
 end
 
+bash "Make sure nova in libvirtd group" do
+  cwd "/tmp"
+  user "root"
+  code <<-EOH
+    usermod -G libvirtd nova
+  EOH
+
+  only_if { node["nova"]["install_method"] == "git" }
+end
+
 template "/etc/sysconfig/libvirtd" do
   source "libvirtd.erb"
   owner  "root"
@@ -103,12 +113,3 @@ template "/etc/sysconfig/libvirtd" do
   only_if { platform? %w{fedora redhat centos} }
 end
 
-bash "Make sure nova in libvirtd group" do
-  cwd "/tmp"
-  user "root"
-  code <<-EOH
-    usermod -G libvirtd nova
-  EOH
-
-  only_if { node["nova"]["install_method"] == "git" }
-end
