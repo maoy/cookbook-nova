@@ -52,8 +52,12 @@ if node["nova"]["install_method"] == "git" then
     rm -rf dist/
     python setup.py sdist
     pip install dist/nova*.tar.gz
+    rm -rf /etc/nova
     mkdir -p /etc/nova
     cp -p #{node["nova"]["git_dest_dir"]}/nova/etc/nova/policy.json /etc/nova/
+    mkdir -p /etc/nova/rootwrap.d
+    cp -p #{node["nova"]["git_dest_dir"]}/nova/etc/nova/rootwrap.d/* /etc/nova/rootwrap.d/
+    cp -p #{node["nova"]["git_dest_dir"]}/nova/etc/nova/rootwrap.conf /etc/nova/
     EOH
     action :nothing
   end
@@ -240,6 +244,7 @@ template "/etc/nova/rootwrap.conf" do
   owner  "root"
   group  "root"
   mode   00644
+  not_if { node["nova"]["install_method"] == "git" }
 end
 
 template "/etc/nova/rootwrap.d/api-metadata.filters" do
@@ -248,6 +253,7 @@ template "/etc/nova/rootwrap.d/api-metadata.filters" do
   owner  "root"
   group  "root"
   mode   00644
+  not_if { node["nova"]["install_method"] == "git" }
 end
 
 template "/etc/nova/rootwrap.d/compute.filters" do
@@ -256,6 +262,7 @@ template "/etc/nova/rootwrap.d/compute.filters" do
   owner  "root"
   group  "root"
   mode   00644
+  not_if { node["nova"]["install_method"] == "git" }
 end
 
 template "/etc/nova/rootwrap.d/network.filters" do
@@ -264,6 +271,7 @@ template "/etc/nova/rootwrap.d/network.filters" do
   owner  "root"
   group  "root"
   mode   00644
+  not_if { node["nova"]["install_method"] == "git" }
 end
 
 # TODO: need to re-evaluate this for accuracy
