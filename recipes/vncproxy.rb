@@ -41,6 +41,12 @@ end
 
 if node["nova"]["install_method"] == "git" then
   #FIXME: only works with novnc
+  git "/usr/share/novnc" do
+    repo "https://github.com/kanaka/noVNC.git"
+    revision "master"
+    action :sync
+  end
+
   cookbook_file "/etc/init/nova-novncproxy.conf" do
     source "upstart/nova-novncproxy.conf"
     mode 0644

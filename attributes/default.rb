@@ -261,7 +261,7 @@ when "ubuntu"
     "nova_scheduler_packages" => [],
     "nova_scheduler_service" => "nova-scheduler",
     # Websockify is not needed: auto installed by pip
-    "nova_vncproxy_packages" => ["novnc"],
+    "nova_vncproxy_packages" => [], #we'll install novnc from source
     "nova_vncproxy_service" => "nova-novncproxy",
     "nova_vncproxy_consoleauth_packages" => [],
     "nova_vncproxy_consoleauth_service" => "nova-consoleauth",
