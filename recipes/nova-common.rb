@@ -52,6 +52,7 @@ if node["nova"]["install_method"] == "git" then
     rm -rf dist/
     python setup.py sdist
     pip install dist/nova*.tar.gz
+    mkdir -p /etc/nova
     cp -p #{node["nova"]["git_dest_dir"]}/nova/etc/nova/policy.json /etc/nova/
     EOH
     action :nothing
@@ -75,6 +76,7 @@ if node["nova"]["install_method"] == "git" then
   node["nova"]["git_hash"] = `bash -c "cd #{node["nova"]["git_dest_dir"]}/nova; git rev-parse HEAD"`
 
   group "#{node["nova"]["group"]}" do
+    system true
     action :create
   end
 
@@ -82,14 +84,57 @@ if node["nova"]["install_method"] == "git" then
     home "/var/lib/nova"
     shell "/bin/sh"
     group "#{node["nova"]["group"]}"
+    system true
     #supports :manage_home => true
+  end
+
+  directory "/var/lib/nova" do
+    owner "nova"
+    group "nova"
+    mode 00700
+    recursive true
+    action :create
   end
 
   directory "/var/lib/nova/instances" do
     owner "nova"
     group "nova"
     mode 00700
-    recursive true
+    action :create
+  end
+
+  directory "/var/lib/nova/keys" do
+    owner "nova"
+    group "nova"
+    mode 00755
+    action :create
+  end
+
+  directory "/var/lib/nova/networks" do
+    owner "nova"
+    group "nova"
+    mode 00755
+    action :create
+  end
+
+  directory "/var/lib/nova/buckets" do
+    owner "nova"
+    group "nova"
+    mode 00755
+    action :create
+  end
+
+  directory "/var/lib/nova/CA" do
+    owner "nova"
+    group "nova"
+    mode 00755
+    action :create
+  end
+
+  directory "/var/lib/nova/images" do
+    owner "nova"
+    group "nova"
+    mode 00755
     action :create
   end
 
