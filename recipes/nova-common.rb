@@ -72,6 +72,8 @@ if node["nova"]["install_method"] == "git" then
     notifies :run, resources(:bash => "install_nova_from_source"), :immediately
   end
 
+  node["nova"]["git_hash"] = `bash -c "cd #{node["nova"]["git_dest_dir"]}/nova; git rev-parse HEAD"`
+
   group "#{node["nova"]["group"]}" do
     action :create
   end
