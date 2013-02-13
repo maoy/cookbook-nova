@@ -39,6 +39,20 @@ if node["nova"]["install_method"] == "git" then
     owner "root"
     group "root"
   end
+
+  cookbook_file "/etc/logrotate.d/nova-network" do
+    source "logrotate.d/nova-network"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+
+  cookbook_file "/etc/logrotate.d/nova-dhcpbridge" do
+    source "logrotate.d/nova-dhcpbridge"
+    mode 0644
+    owner "root"
+    group "root"
+  end
 end
 
 service "nova-network" do

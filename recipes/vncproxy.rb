@@ -54,6 +54,20 @@ if node["nova"]["install_method"] == "git" then
     owner "root"
     group "root"
   end
+
+  cookbook_file "/etc/logrotate.d/nova-novncproxy" do
+    source "logrotate.d/nova-novncproxy"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+
+  cookbook_file "/etc/logrotate.d/nova-consoleauth" do
+    source "logrotate.d/nova-consoleauth"
+    mode 0644
+    owner "root"
+    group "root"
+  end
 end
 
 service "nova-vncproxy" do

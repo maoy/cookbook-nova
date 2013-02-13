@@ -47,6 +47,13 @@ if node["nova"]["install_method"] == "git" then
     owner "root"
     group "root"
   end
+
+  cookbook_file "/etc/logrotate.d/nova-scheduler" do
+    source "logrotate.d/nova-scheduler"
+    mode 0644
+    owner "root"
+    group "root"
+  end
 end
 
 service "nova-scheduler" do

@@ -38,6 +38,13 @@ if node["nova"]["install_method"] == "git" then
     owner "root"
     group "root"
   end
+
+  cookbook_file "/etc/logrotate.d/nova-cert" do
+    source "logrotate.d/nova-cert"
+    mode 0644
+    owner "root"
+    group "root"
+  end
 end
 
 service "nova-cert" do

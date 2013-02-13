@@ -48,6 +48,14 @@ if node["nova"]["install_method"] == "git" then
     group "root"
     only_if { node["nova"]["release"] >= "grizzly" }
   end
+
+  cookbook_file "/etc/logrotate.d/nova-conductor" do
+    source "logrotate.d/nova-conductor"
+    mode 0644
+    owner "root"
+    group "root"
+    only_if { node["nova"]["release"] >= "grizzly" }
+  end
 end
 
 service "nova-conductor" do

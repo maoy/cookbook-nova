@@ -60,6 +60,13 @@ if node["nova"]["install_method"] == "git" then
     owner "root"
     group "root"
   end
+
+  cookbook_file "/etc/logrotate.d/nova-api-ec2" do
+    source "logrotate.d/nova-api-ec2"
+    mode 0644
+    owner "root"
+    group "root"
+  end
 end
 
 service "nova-api-ec2" do
