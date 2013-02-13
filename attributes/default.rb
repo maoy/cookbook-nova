@@ -192,6 +192,8 @@ when "fedora", "redhat", "centos" # :pragma-foodcritic: ~FC024 - won't fix this
     "nova_compute_service" => "openstack-nova-compute",
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
+    "nova_conductor_packages" => ["openstack-nova-conductor"],
+    "nova_conductor_service" => "openstack-nova-conductor",
     "nova_scheduler_packages" => ["openstack-nova-scheduler"],
     "nova_scheduler_service" => "openstack-nova-scheduler",
     "nova_vncproxy_packages" => ["openstack-nova-novncproxy"], # me thinks this is right?
@@ -222,6 +224,8 @@ when "ubuntu"
     "nova_compute_service" => "nova-compute",
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
+    "nova_conductor_packages" => ["nova-conductor"],
+    "nova_conductor_service" => "nova-conductor",
     "nova_scheduler_packages" => ["nova-scheduler"],
     "nova_scheduler_service" => "nova-scheduler",
     # Websockify is needed due to https://bugs.launchpad.net/ubuntu/+source/nova/+bug/1076442

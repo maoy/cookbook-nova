@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+
 include_recipe "nova::nova-common"
 
 platform_options = node["nova"]["platform"]
@@ -37,6 +38,7 @@ platform_options["nova_conductor_packages"].each do |pkg|
     options platform_options["package_overrides"]
 
     action :upgrade
+    only_if { node["nova"]["release"] >= "grizzly" }
   end
 end
 
