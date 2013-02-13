@@ -49,6 +49,7 @@ if node["nova"]["install_method"] == "git" then
     user "root"
     cwd "#{node["nova"]["git_dest_dir"]}/nova"
     code <<-EOH
+    rm -rf dist/
     python setup.py sdist
     pip install dist/nova*.tar.gz
     EOH
