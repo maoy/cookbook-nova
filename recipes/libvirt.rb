@@ -62,6 +62,8 @@ bash "Make sure nova in libvirtd group" do
   user "root"
   code <<-EOH
     usermod -G libvirtd nova
+    # with this we can set /var/lib/nova to 750 instead of 755
+    usermod -G nova libvirt-qemu
   EOH
 
   only_if { node["nova"]["install_method"] == "git" }

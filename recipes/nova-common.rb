@@ -89,23 +89,23 @@ if node["nova"]["install_method"] == "git" then
   end
 
   directory "/var/lib/nova" do
-    owner "nova"
-    group "nova"
-    mode 00700
+    owner "#{node["nova"]["user"]}"
+    group "#{node["nova"]["group"]}"
+    mode 00750
     recursive true
     action :create
   end
 
   directory "/var/lib/nova/instances" do
-    owner "nova"
-    group "nova"
-    mode 00700
+    owner "#{node["nova"]["user"]}"
+    group "#{node["nova"]["group"]}"
+    mode 00750
     action :create
   end
 
   directory "/var/lib/nova/keys" do
-    owner "nova"
-    group "nova"
+    owner "#{node["nova"]["user"]}"
+    group "#{node["nova"]["group"]}"
     mode 00755
     action :create
   end
