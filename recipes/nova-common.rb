@@ -85,7 +85,7 @@ if node["nova"]["install_method"] == "git" then
     #supports :manage_home => true
   end
 
-  directory "/var/lib/nova" do
+  directory "/var/lib/nova/instances" do
     owner "nova"
     group "nova"
     mode 00700
