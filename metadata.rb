@@ -4,7 +4,7 @@ maintainer_email "matt@opscode.com"
 license          "Apache 2.0"
 description      "The OpenStack Compute service Nova."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2012.2.0"
+version          "2013.1.0"
 
 recipe "nova::api-ec2", "Installs AWS EC2 compatible API and configures the service and endpoints in keystone"
 recipe "nova::api-metadata", "Installs the nova metadata package"
@@ -33,3 +33,4 @@ depends "selinux"
 depends "sysctl"
 depends "yum"
 depends "python"
+depends "git"

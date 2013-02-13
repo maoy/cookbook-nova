@@ -6,7 +6,11 @@
 verbose=true
 auth_strategy=keystone
 dhcpbridge_flagfile=/etc/nova/nova.conf
+<% if node["nova"]["install_method"] == "git" -%>
+dhcpbridge=/usr/local/bin/nova-dhcpbridge
+<% else -%>
 dhcpbridge=/usr/bin/nova-dhcpbridge
+<% end %>
 logdir=/var/log/nova
 <% if node["nova"]["syslog"]["use"] %>
 use_syslog=<%= node["nova"]["syslog"]["use"] %>
@@ -62,9 +66,14 @@ image_service=nova.image.glance.GlanceImageService
 glance_api_servers=<%= @glance_api_ipaddress %>:<%= @glance_api_port %>
 
 ##### COMPUTE #####
+# must specified since Grizzly
+<% if node["nova"]["release"] > "folsom" -%>
+compute_driver = libvirt.LibvirtDriver
+<% else %>
+connection_type=libvirt
+<% end %>
 compute_manager=nova.compute.manager.ComputeManager
 sql_connection=<%= @sql_connection %>
-connection_type=libvirt
 libvirt_type=<%= node["nova"]["libvirt"]["virt_type"] %>
 # Command prefix to use for running commands as root (default: sudo)
 rootwrap_config=/etc/nova/rootwrap.conf

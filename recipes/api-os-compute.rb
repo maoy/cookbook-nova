@@ -26,6 +26,9 @@ end
 include_recipe "nova::nova-common"
 
 platform_options = node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
 
 directory "/var/lock/nova" do
   owner node["nova"]["user"]
@@ -41,8 +44,11 @@ directory ::File.dirname(node["nova"]["api"]["auth"]["cache_dir"]) do
   only_if { node["openstack"]["auth"]["strategy"] == "pki" }
 end
 
-package "python-keystone" do
-  action :upgrade
+# when install from source, we don't need this
+if node["nova"]["install_method"] == "package" then
+  package "python-keystone" do
+    action :upgrade
+  end
 end
 
 platform_options["api_os_compute_packages"].each do |pkg|
@@ -53,12 +59,22 @@ platform_options["api_os_compute_packages"].each do |pkg|
   end
 end
 
+if node["nova"]["install_method"] == "git" then
+  cookbook_file "/etc/init/nova-api-os-compute.conf" do
+    source "upstart/nova-api-os-compute.conf"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+end
+
 service "nova-api-os-compute" do
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["api_os_compute_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
-  action :enable
+  action [:enable, :start]
 end
 
 keystone_service_role = node["nova"]["keystone_service_chef_role"]

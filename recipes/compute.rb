@@ -26,13 +26,28 @@ include_recipe "nova::nova-common"
 #include_recipe "nova::network"
 
 platform_options = node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
+
 nova_compute_packages = platform_options["nova_compute_packages"]
 
-if platform?(%w(ubuntu))
-  if node["nova"]["libvirt"]["virt_type"] == "kvm"
-    nova_compute_packages << "nova-compute-kvm"
-  elsif node["nova"]["libvirt"]["virt_type"] == "qemu"
-    nova_compute_packages << "nova-compute-qemu"
+if node["nova"]["install_method"] == "package" then
+  if platform?(%w(ubuntu))
+    if node["nova"]["libvirt"]["virt_type"] == "kvm"
+      nova_compute_packages << "nova-compute-kvm"
+    elsif node["nova"]["libvirt"]["virt_type"] == "qemu"
+      nova_compute_packages << "nova-compute-qemu"
+    end
+  end
+else
+  # install from source
+  if platform?(%w(ubuntu))
+    if node["nova"]["libvirt"]["virt_type"] == "kvm"
+      nova_compute_packages << "kvm"
+    elsif node["nova"]["libvirt"]["virt_type"] == "qemu"
+      nova_compute_packages << "qemu"
+    end
   end
 end
 
@@ -41,6 +56,15 @@ nova_compute_packages.each do |pkg|
     options platform_options["package_overrides"]
 
     action :upgrade
+  end
+end
+
+if node["nova"]["install_method"] == "git" then
+  cookbook_file "/etc/init/nova-compute.conf" do
+    source "upstart/nova-compute.conf"
+    mode 0644
+    owner "root"
+    group "root"
   end
 end
 

@@ -26,6 +26,9 @@ end
 include_recipe "nova::nova-common"
 
 platform_options = node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
 
 directory "/var/lock/nova" do
   owner node["nova"]["user"]
@@ -35,8 +38,11 @@ directory "/var/lock/nova" do
   action :create
 end
 
-package "python-keystone" do
-  action :upgrade
+# when install from source, we don't need this
+if node["nova"]["install_method"] == "package" then
+  package "python-keystone" do
+    action :upgrade
+  end
 end
 
 platform_options["nova_api_metadata_packages"].each do |pkg|
@@ -47,12 +53,22 @@ platform_options["nova_api_metadata_packages"].each do |pkg|
   end
 end
 
+if node["nova"]["install_method"] == "git" then
+  cookbook_file "/etc/init/nova-api-metadata.conf" do
+    source "upstart/nova-api-metadata.conf"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+end
+
 service "nova-api-metadata" do
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["nova_api_metadata_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
-  action :enable
+  action [:enable, :start]
 end
 
 identity_admin_endpoint = endpoint "identity-admin"

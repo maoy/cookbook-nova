@@ -1,6 +1,15 @@
 include_attribute "openstack-common"
 ########################################################################
 # Toggles - These can be overridden at the environment level
+
+# valid options: package, or git
+default["nova"]["install_method"] = "package"
+default["nova"]["release"] = node["openstack"]["release"]
+
+# if install_method is git, the following attributes are used.
+default["nova"]["git_repo"] = "https://github.com/openstack/nova.git"
+default["nova"]["git_revision"] = "master"
+default["nova"]["git_dest_dir"] = "/opt/stack"
 ########################################################################
 
 # Set to some text value if you want templated config files
@@ -227,6 +236,47 @@ when "ubuntu"
     "nova_cert_service" => "nova-cert",
     "mysql_service" => "mysql",
     "common_packages" => ["nova-common"],
+    "iscsi_helper" => "tgtadm",
+    "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
+  }
+  # dependencies when installed from source (git)
+  default["nova"]["source_platform"] = {
+    "api_ec2_packages" => [],
+    "api_ec2_service" => "nova-api-ec2",
+    "api_os_compute_packages" => [],
+    "api_os_compute_process_name" => "nova-api-os-compute",
+    "api_os_compute_service" => "nova-api-os-compute",
+    "nova_api_metadata_packages" => [],
+    "nova_api_metadata_service" => "nova-api-metadata",
+    "nova_api_metadata_process_name" => "nova-api-metadata",
+    # these are developed from apt-rdepends, more or less
+    "nova_compute_packages" => ["curl", "ebtables", "gawk", "iptables", "kpartx", "open-iscsi", "parted",
+                                "qemu-utils", "vlan", "python-libvirt"],
+    "nova_compute_service" => "nova-compute",
+    "nova_network_packages" => ["iptables", "bridge-utils", "dnsmasq-base", "dnsmasq-utils", "iputils-arping",
+                                "netcat", "vlan"],
+    "nova_network_service" => "nova-network",
+    "nova_conductor_packages" => [],
+    "nova_conductor_service" => "nova-conductor",
+    "nova_scheduler_packages" => [],
+    "nova_scheduler_service" => "nova-scheduler",
+    # Websockify is not needed: auto installed by pip
+    "nova_vncproxy_packages" => ["novnc"],
+    "nova_vncproxy_service" => "nova-novncproxy",
+    "nova_vncproxy_consoleauth_packages" => [],
+    "nova_vncproxy_consoleauth_service" => "nova-consoleauth",
+    "nova_vncproxy_consoleauth_process_name" => "nova-consoleauth",
+    "libvirt_packages" => ["libvirt-bin"],
+    "libvirt_service" => "libvirt-bin",
+    "nova_cert_packages" => [],
+    "nova_cert_service" => "nova-cert",
+    "mysql_service" => "mysql",
+    # see devstack/files/apts/nova for reference
+    # most python dependencies should be automatically installed via pip
+    # but we install a few such as lxml and numpy here just to save some compile time
+    "common_packages" => ["python-pip", "python-dev", "build-essential", "python-mysqldb",
+                          "python-lxml", "python-numpy",
+                          "python-m2crypto","python-greenlet"],
     "iscsi_helper" => "tgtadm",
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }

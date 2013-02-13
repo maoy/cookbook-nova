@@ -19,6 +19,9 @@
 include_recipe "nova::nova-common"
 
 platform_options=node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
 
 platform_options["nova_cert_packages"].each do |pkg|
   package pkg do
@@ -28,10 +31,20 @@ platform_options["nova_cert_packages"].each do |pkg|
   end
 end
 
+if node["nova"]["install_method"] == "git" then
+  cookbook_file "/etc/init/nova-cert.conf" do
+    source "upstart/nova-cert.conf"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+end
+
 service "nova-cert" do
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["nova_cert_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
-  action :enable
+  action [:enable, :start]
 end

@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: nova
-# Recipe:: scheduler
+# Recipe:: conductor
 #
-# Copyright 2012, Rackspace US, Inc.
+# Copyright 2013,  AT&T, Yun Mao <yunmao@gmail.com>.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ directory "/var/lock/nova" do
   action :create
 end
 
-platform_options["nova_scheduler_packages"].each do |pkg|
+platform_options["nova_conductor_packages"].each do |pkg|
   package pkg do
     options platform_options["package_overrides"]
 
@@ -41,19 +41,21 @@ platform_options["nova_scheduler_packages"].each do |pkg|
 end
 
 if node["nova"]["install_method"] == "git" then
-  cookbook_file "/etc/init/nova-scheduler.conf" do
-    source "upstart/nova-scheduler.conf"
+  cookbook_file "/etc/init/nova-conductor.conf" do
+    source "upstart/nova-conductor.conf"
     mode 0644
     owner "root"
     group "root"
+    only_if { node["nova"]["release"] >= "grizzly" }
   end
 end
 
-service "nova-scheduler" do
+service "nova-conductor" do
   provider Chef::Provider::Service::Upstart
-  service_name platform_options["nova_scheduler_service"]
+  service_name platform_options["nova_conductor_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
   action [:enable, :start]
+  only_if { node["nova"]["release"] >= "grizzly" }
 end

@@ -20,6 +20,9 @@
 include_recipe "nova::nova-common"
 
 platform_options = node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
 
 platform_options["nova_vncproxy_packages"].each do |pkg|
   package pkg do
@@ -36,15 +39,34 @@ platform_options["nova_vncproxy_consoleauth_packages"].each do |pkg|
   end
 end
 
+if node["nova"]["install_method"] == "git" then
+  #FIXME: only works with novnc
+  cookbook_file "/etc/init/nova-novncproxy.conf" do
+    source "upstart/nova-novncproxy.conf"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+
+  cookbook_file "/etc/init/nova-consoleauth.conf" do
+    source "upstart/nova-consoleauth.conf"
+    mode 0644
+    owner "root"
+    group "root"
+  end
+end
+
 service "nova-vncproxy" do
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["nova_vncproxy_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")
 
-  action :enable
+  action [:enable, :start]
 end
 
 service "nova-consoleauth" do
+  provider Chef::Provider::Service::Upstart
   service_name platform_options["nova_vncproxy_consoleauth_service"]
   supports :status => true, :restart => true
   subscribes :restart, resources("template[/etc/nova/nova.conf]")

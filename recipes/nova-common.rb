@@ -27,13 +27,72 @@ if platform?(%w(fedora redhat centos)) # :pragma-foodcritic: ~FC024 - won't fix 
   include_recipe "yum::epel"
 end
 
+
 platform_options = node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
 
 platform_options["common_packages"].each do |pkg|
   package pkg do
     options platform_options["package_overrides"]
 
     action :upgrade
+  end
+end
+
+if node["nova"]["install_method"] == "git" then
+
+  include_recipe "git"
+
+  bash "install_nova_from_source" do
+    user "root"
+    cwd "#{node["nova"]["git_dest_dir"]}/nova"
+    code <<-EOH
+    python setup.py sdist
+    pip install dist/nova*.tar.gz
+    EOH
+    action :nothing
+  end
+
+  directory "#{node["nova"]["git_dest_dir"]}" do
+    owner "root"
+    group "root"
+    mode 00700
+    recursive true
+    action :create
+  end
+
+  git "#{node["nova"]["git_dest_dir"]}/nova" do
+    repo "#{node["nova"]["git_repo"]}"
+    revision "#{node["nova"]["git_revision"]}"
+    action :sync
+    notifies :run, resources(:bash => "install_nova_from_source"), :immediately
+  end
+
+  group "#{node["nova"]["group"]}" do
+    action :create
+  end
+
+  user "#{node["nova"]["user"]}" do
+    home "/var/lib/nova"
+    shell "/bin/sh"
+    group "#{node["nova"]["group"]}"
+    #supports :manage_home => true
+  end
+
+  directory "/var/log/nova" do
+    owner node["nova"]["user"]
+    group node["nova"]["group"]
+    mode  00700
+    action :create
+  end
+
+  cookbook_file "/etc/sudoers.d/nova_sudoers" do
+    source "nova_sudoers"
+    mode 0440
+    owner "root"
+    group "root"
   end
 end
 

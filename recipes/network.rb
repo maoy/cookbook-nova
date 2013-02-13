@@ -20,12 +20,24 @@
 include_recipe "nova::nova-common"
 
 platform_options = node["nova"]["platform"]
+if node["nova"]["install_method"] == "git" then
+  platform_options = node["nova"]["source_platform"]
+end
 
 platform_options["nova_network_packages"].each do |pkg|
   package pkg do
     options platform_options["package_overrides"]
 
     action :upgrade
+  end
+end
+
+if node["nova"]["install_method"] == "git" then
+  cookbook_file "/etc/init/nova-network.conf" do
+    source "upstart/nova-network.conf"
+    mode 0644
+    owner "root"
+    group "root"
   end
 end
 
