@@ -52,6 +52,7 @@ if node["nova"]["install_method"] == "git" then
     rm -rf dist/
     python setup.py sdist
     pip install dist/nova*.tar.gz
+    cp -p #{node["nova"]["git_dest_dir"]}/nova/etc/nova/policy.json /etc/nova/
     EOH
     action :nothing
   end
