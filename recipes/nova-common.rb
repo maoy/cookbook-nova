@@ -52,6 +52,7 @@ if node["nova"]["install_method"] == "git" then
     rm -rf dist/
     python setup.py sdist
     pip install dist/nova*.tar.gz
+    pip install python-cinderclient #this is required since it's not in stable/folsom's pip-requires, otherwise a no-op anyway
     rm -rf /etc/nova
     mkdir -p /etc/nova
     cp -p #{node["nova"]["git_dest_dir"]}/nova/etc/nova/policy.json /etc/nova/
