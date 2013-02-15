@@ -122,7 +122,7 @@ paste.app_factory = nova.api.openstack.compute.versions:Versions.factory
 paste.filter_factory = nova.api.auth:NovaKeystoneContext.factory
 
 [filter:authtoken]
-<% if node["nova"]["release"] >= "grizzly" -%>
+<% if node["nova"]["release"] >= "grizzly" or node["nova"]["install_method"] == "git" -%>
 paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
 <% else -%>
 paste.filter_factory = keystone.middleware.auth_token:filter_factory
