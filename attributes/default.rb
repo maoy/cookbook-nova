@@ -177,6 +177,10 @@ default["nova"]["ratelimit"]["api"]["enabled"] = true
 default["nova"]["api"]["auth"]["cache_dir"] = "/var/cache/nova/api"
 default["nova"]["ceilometer-api"]["auth"]["cache_dir"] = "/var/cache/nova/ceilometer-api"
 
+default["nova"]["servicegroup_driver"] = "db" # valid choices: db and zk
+# if zk is used, one must specify node["nova"]["zookeeper"]["address"]
+
+# packages 
 case platform
 when "fedora", "redhat", "centos" # :pragma-foodcritic: ~FC024 - won't fix this
   default["nova"]["platform"] = {

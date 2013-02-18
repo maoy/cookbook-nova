@@ -155,3 +155,11 @@ keystone_ec2_url=<%= @identity_endpoint.scheme %>://<%= @identity_endpoint.host 
 # iscsi target user-land tool to use
 iscsi_helper=<%= @iscsi_helper %>
 volume_api_class=<%= node["nova"]["config"]["volume_api_class"] %>
+
+##### SERVICE GROUP ####
+servicegroup_driver=<%= node["nova"]["servicegroup_driver"] %>
+<%- if node["nova"]["servicegroup_driver"] == "zk" then %>
+[zookeeper]
+address=<%= node["nova"]["zookeeper"]["address"] %>
+<% end -%>
+
