@@ -33,6 +33,16 @@ if node["nova"]["install_method"] == "git" then
   platform_options = node["nova"]["source_platform"]
 end
 
+if node["nova"]["servicegroup_driver"] == "zk" then
+  package "python-zookeeper" do
+    action :upgrade
+  end
+
+  bash "install evzookeeper" do
+    cmd "pip install evzookeeper"
+  end
+end
+
 platform_options["common_packages"].each do |pkg|
   package pkg do
     options platform_options["package_overrides"]

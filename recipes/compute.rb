@@ -59,16 +59,6 @@ nova_compute_packages.each do |pkg|
   end
 end
 
-if node["nova"]["servicegroup_driver"] == "zk" then
-  package "python-zookeeper" do
-    action :upgrade
-  end
-
-  bash "install evzookeeper" do
-    cmd "pip install evzookeeper"
-  end
-end
-
 if node["nova"]["install_method"] == "git" then
   cookbook_file "/etc/init/nova-compute.conf" do
     source "upstart/nova-compute.conf"
