@@ -64,8 +64,11 @@ libvirt_use_virtio_for_bridges=true
 <% end -%>
 vlan_interface=<%= node["nova"]["network"]["vlan_interface"] %>
 flat_interface=<%= node["nova"]["network"]["flat_interface"] %>
-<% if node["nova"]["flat_network_bridge"] -%>
-flat_network_bridge=<%= node["nova"]["flat_network_bridge"] %>
+<% if node["nova"]["network"]["flat_network_bridge"] -%>
+flat_network_bridge=<%= node["nova"]["network"]["flat_network_bridge"] %>
+<% end -%>
+<% if node["nova"]["network"]["linuxnet_interface_driver"] -%>
+linuxnet_interface_driver=<%= node["nova"]["network"]["linuxnet_interface_driver"] %>
 <% end -%>
 
 ##### GLANCE #####
