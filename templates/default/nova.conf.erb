@@ -73,6 +73,12 @@ linuxnet_interface_driver=<%= node["nova"]["network"]["linuxnet_interface_driver
 <% if node["nova"]["network"]["linuxnet_ovs_integration_bridge"] -%>
 linuxnet_ovs_integration_bridge=<%= node["nova"]["network"]["linuxnet_ovs_integration_bridge"] %>
 <% end -%>
+<% if node["nova"]["network"]["libvirt_vif_driver"] -%>
+libvirt_vif_driver=<%= node["nova"]["network"]["libvirt_vif_driver"] %>
+<% end -%>
+<% if node["nova"]["network"]["libvirt_ovs_bridge"] -%>
+libvirt_ovs_bridge=<%= node["nova"]["network"]["libvirt_ovs_bridge"] %>
+<% end -%>
 
 ##### GLANCE #####
 image_service=nova.image.glance.GlanceImageService
