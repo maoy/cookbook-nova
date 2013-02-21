@@ -70,6 +70,9 @@ flat_network_bridge=<%= node["nova"]["network"]["flat_network_bridge"] %>
 <% if node["nova"]["network"]["linuxnet_interface_driver"] -%>
 linuxnet_interface_driver=<%= node["nova"]["network"]["linuxnet_interface_driver"] %>
 <% end -%>
+<% if node["nova"]["network"]["linuxnet_ovs_integration_bridge"] -%>
+linuxnet_ovs_integration_bridge=<%= node["nova"]["network"]["linuxnet_ovs_integration_bridge"] %>
+<% end -%>
 
 ##### GLANCE #####
 image_service=nova.image.glance.GlanceImageService
