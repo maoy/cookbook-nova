@@ -221,7 +221,9 @@ Chef::Log.debug("nova::nova-common:nova_api_endpoint|#{::URI.decode nova_api_end
 Chef::Log.debug("nova::nova-common:ec2_public_endpoint|#{ec2_public_endpoint.to_s}")
 Chef::Log.debug("nova::nova-common:image_endpoint|#{image_endpoint.to_s}")
 
-node.default["nova"]["libvirt"]["vncserver_listen"] = node["network"]["ipaddress_#{node["openstack"]["internal_interface"]}"]
+# Note(maoy): due the the limitation described here, we always listen on 0.0.0.0 for vnc: http://docs.openstack.org/trunk/openstack-compute/admin/content/important-nova-compute-options.html
+#node.default["nova"]["libvirt"]["vncserver_listen"] = node["network"]["ipaddress_#{node["openstack"]["internal_interface"]}"]
+node.default["nova"]["libvirt"]["vncserver_listen"] = "0.0.0.0"
 node.default["nova"]["libvirt"]["vncserver_proxyclient_address"] = node["network"]["ipaddress_#{node["openstack"]["internal_interface"]}"]
 template "/etc/nova/nova.conf" do
   source "nova.conf.erb"
